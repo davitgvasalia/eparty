@@ -1,0 +1,28 @@
+# systemd unit for the E-Party Next.js app.
+# Installed by deploy/setup-server.sh to /etc/systemd/system/eparty.service.
+
+[Unit]
+Description=E-Party (Next.js)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=eparty
+Group=eparty
+WorkingDirectory=/srv/eparty/app
+Environment=NODE_ENV=production
+# Only nginx talks to the app; it is not reachable from outside.
+ExecStart=/usr/bin/node node_modules/next/dist/bin/next start -H 127.0.0.1 -p 3000
+Restart=always
+RestartSec=5
+
+# Hardening: the app may only write its ID photo folder.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/eparty/storage /srv/eparty/app/.next
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: eparty
+      POSTGRES_PASSWORD: eparty
+      POSTGRES_DB: eparty
+    ports:
+      - "5432:5432"
+    volumes:
+      - eparty-db:/var/lib/postgresql/data
+
+volumes:
+  eparty-db:

@@ -1,0 +1,145 @@
+// Dates the app compares by day (poll start/end, initiative created/promoted) are
+// stored as "YYYY-MM-DD" strings, the same format the client already uses.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  member
+}
+
+enum InitiativeStage {
+  draft
+  initiative
+}
+
+enum InitiativeStatus {
+  pending
+  approved
+  rejected
+}
+
+model District {
+  id           String        @id @default(cuid())
+  nameKa       String
+  nameEn       String
+  createdAt    DateTime      @default(now())
+  members      Member[]
+  applications Application[]
+}
+
+model Member {
+  id              String           @id @default(cuid())
+  nameKa          String
+  nameEn          String
+  wallet          String           @unique
+  role            Role             @default(member)
+  districtId      String?
+  district        District?        @relation(fields: [districtId], references: [id])
+  phone           String?
+  email           String?
+  joined          String // YYYY-MM-DD
+  // Removed members are kept so their past poll votes still count.
+  active          Boolean          @default(true)
+  initiatives     Initiative[]
+  pollVotes       PollVote[]
+  initiativeVotes InitiativeVote[]
+  likes           InitiativeLike[]
+}
+
+model Application {
+  id         String   @id @default(cuid())
+  nameKa     String
+  nameEn     String
+  wallet     String   @unique
+  districtId String
+  district   District @relation(fields: [districtId], references: [id])
+  phone      String
+  email      String
+  // File names inside storage/ids (outside public/, served to the admin only).
+  idFront    String
+  idBack     String
+  createdAt  DateTime @default(now())
+}
+
+model Poll {
+  id           String       @id @default(cuid())
+  titleKa      String
+  titleEn      String
+  image        String? // small JPEG data URL
+  startsAt     String? // YYYY-MM-DD
+  endsAt       String // YYYY-MM-DD
+  closedAt     String? // YYYY-MM-DD, set when an admin closes it
+  initiativeId String?      @unique
+  initiative   Initiative?  @relation(fields: [initiativeId], references: [id])
+  createdAt    DateTime     @default(now())
+  options      PollOption[]
+  votes        PollVote[]
+}
+
+model PollOption {
+  id       String     @id @default(cuid())
+  pollId   String
+  poll     Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  labelKa  String
+  labelEn  String
+  position Int
+  votes    PollVote[]
+}
+
+model PollVote {
+  pollId    String
+  poll      Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  memberId  String
+  member    Member     @relation(fields: [memberId], references: [id])
+  optionId  String
+  option    PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+
+  @@id([pollId, memberId])
+}
+
+model Initiative {
+  id         String           @id @default(cuid())
+  titleKa    String
+  titleEn    String
+  summaryKa  String
+  summaryEn  String
+  authorId   String
+  author     Member           @relation(fields: [authorId], references: [id])
+  stage      InitiativeStage  @default(draft)
+  status     InitiativeStatus @default(pending)
+  createdAt  String // YYYY-MM-DD
+  promotedAt String? // YYYY-MM-DD the draft became an initiative
+  likes      InitiativeLike[]
+  votes      InitiativeVote[]
+  poll       Poll?
+}
+
+model InitiativeLike {
+  initiativeId String
+  initiative   Initiative @relation(fields: [initiativeId], references: [id], onDelete: Cascade)
+  memberId     String
+  member       Member     @relation(fields: [memberId], references: [id])
+  createdAt    DateTime   @default(now())
+
+  @@id([initiativeId, memberId])
+}
+
+model InitiativeVote {
+  initiativeId String
+  initiative   Initiative @relation(fields: [initiativeId], references: [id], onDelete: Cascade)
+  memberId     String
+  member       Member     @relation(fields: [memberId], references: [id])
+  yes          Boolean
+  createdAt    DateTime   @default(now())
+
+  @@id([initiativeId, memberId])
+}
