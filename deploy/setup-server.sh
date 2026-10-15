@@ -7,6 +7,8 @@
 #   bash setup-server.sh eparty.ge me@example.com git@github.com:me/eparty.git 4aTU...yfp8
 #
 # The domain's A record must already point at this server (needed for the HTTPS certificate).
+# <domain> may also be the server's IP: everything is installed but HTTPS is skipped, and
+# wallet sign-in will not work until the script is re-run with a real domain.
 # Safe to re-run: existing database, .env and photos are kept.
 set -euo pipefail
 
@@ -112,15 +114,27 @@ rm -f /etc/nginx/sites-enabled/default
 nginx -t
 systemctl reload nginx
 
-echo "==> HTTPS certificate"
-# www.<domain> only if it has DNS (a subdomain like e-p.site.ge usually has no www)
-CERT_DOMAINS=(-d "$DOMAIN")
-getent hosts "www.$DOMAIN" >/dev/null && CERT_DOMAINS+=(-d "www.$DOMAIN")
-certbot --nginx "${CERT_DOMAINS[@]}" -m "$EMAIL" --agree-tos -n --redirect
+IP_ONLY=false
+[[ $DOMAIN =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] && IP_ONLY=true
+
+if $IP_ONLY; then
+  echo "==> HTTPS certificate: skipped (no domain yet)"
+else
+  echo "==> HTTPS certificate"
+  # www.<domain> only if it has DNS (a subdomain like e-p.site.ge usually has no www)
+  CERT_DOMAINS=(-d "$DOMAIN")
+  getent hosts "www.$DOMAIN" >/dev/null && CERT_DOMAINS+=(-d "www.$DOMAIN")
+  certbot --nginx "${CERT_DOMAINS[@]}" -m "$EMAIL" --agree-tos -n --redirect
+fi
 
 echo "==> Daily backup (03:00)"
 chmod +x "$APP_DIR/deploy/"*.sh
 echo "0 3 * * * root $APP_DIR/deploy/backup.sh >> /var/log/eparty-backup.log 2>&1" > /etc/cron.d/eparty-backup
 
 echo
-echo "Done. Open https://$DOMAIN and sign in with the administrator wallet."
+if $IP_ONLY; then
+  echo "Done. Open http://$DOMAIN to check the site. Sign-in needs HTTPS: once the domain"
+  echo "points here, re-run this script with the domain instead of the IP."
+else
+  echo "Done. Open https://$DOMAIN and sign in with the administrator wallet."
+fi
