@@ -113,7 +113,10 @@ nginx -t
 systemctl reload nginx
 
 echo "==> HTTPS certificate"
-certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" -m "$EMAIL" --agree-tos -n --redirect
+# www.<domain> only if it has DNS (a subdomain like e-p.site.ge usually has no www)
+CERT_DOMAINS=(-d "$DOMAIN")
+getent hosts "www.$DOMAIN" >/dev/null && CERT_DOMAINS+=(-d "www.$DOMAIN")
+certbot --nginx "${CERT_DOMAINS[@]}" -m "$EMAIL" --agree-tos -n --redirect
 
 echo "==> Daily backup (03:00)"
 chmod +x "$APP_DIR/deploy/"*.sh
