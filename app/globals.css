@@ -98,3 +98,12 @@ body {
 .wallet-adapter-button-trigger {
   background-color: #4f46e5 !important;
 }
+
+/* Mobile bottom nav: keep it clear of the phone's system buttons / gesture bar.
+   Falls back to 12px where the browser reports no inset (some Android in-app browsers). */
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom), 0.75rem);
+}
+.pb-mobile-nav {
+  padding-bottom: calc(7rem + env(safe-area-inset-bottom));
+}

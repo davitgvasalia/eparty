@@ -97,22 +97,22 @@ export default function Shell({
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-24 md:px-8 md:pb-10">
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-mobile-nav md:px-8 md:pb-10">
           {children}
         </main>
       </div>
 
       {/* Bottom nav (mobile) */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-7 border-t border-slate-200 bg-surface md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-7 border-t border-slate-200 bg-surface pb-safe md:hidden">
         {ITEMS.map(({ key, href, icon: Icon }) => (
           <Link
             key={key}
             href={`/${locale}${href === "/" ? "" : href}`}
-            className={`flex flex-col items-center gap-1 py-2 text-[10px] ${
+            className={`flex flex-col items-center gap-1 py-3 text-[11px] ${
               isActive(href) ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500"
             }`}
           >
-            <Icon size={20} />
+            <Icon size={22} />
             <span className="max-w-full truncate px-0.5">{dict.nav[key]}</span>
           </Link>
         ))}

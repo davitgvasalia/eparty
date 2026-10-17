@@ -30,6 +30,8 @@ export const viewport: Viewport = {
   themeColor: "#4f46e5",
   width: "device-width",
   initialScale: 1,
+  // Lets env(safe-area-inset-*) report the space under the phone's system bars.
+  viewportFit: "cover",
 };
 
 export default function LocaleLayout({
