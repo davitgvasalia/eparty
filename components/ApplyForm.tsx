@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import type { Dict } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
 import { shrinkImage } from "@/lib/image";
+import { isWallet } from "@/lib/wallet";
 import { api, useDistricts, useSession } from "./PollsStore";
-import WalletButton from "./WalletButton";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\+?[\d\s()-]{6,20}$/;
@@ -36,7 +36,6 @@ function IdPhoto({
         <input
           type="file"
           accept="image/*"
-          capture="environment"
           aria-label={label}
           className="input mt-1"
           onChange={async (e) => {
@@ -52,9 +51,11 @@ function IdPhoto({
 
 export default function ApplyForm({ locale, dict }: { locale: Locale; dict: Dict }) {
   const t = dict.apply;
-  const { wallet, signedIn, member, signIn, signingIn } = useSession();
+  // No sign-in needed to apply; a connected wallet only pre-fills the address.
+  const { wallet: connected, member } = useSession();
   const districts = useDistricts();
 
+  const [wallet, setWallet] = useState("");
   const [nameKa, setNameKa] = useState("");
   const [nameEn, setNameEn] = useState("");
   const [phone, setPhone] = useState("");
@@ -69,15 +70,22 @@ export default function ApplyForm({ locale, dict }: { locale: Locale; dict: Dict
   // The server answers known problems with a dictionary key (badEmail, alreadyApplied, ...).
   const message = (code: string) => (code in t ? t[code as keyof typeof t] : code);
 
+  useEffect(() => {
+    if (connected) setWallet((w) => w || connected);
+  }, [connected]);
+
   const submit = async () => {
-    if (!nameKa.trim() || !nameEn.trim() || !phone.trim() || !email.trim() || !districtId || !idFront || !idBack)
+    if (!wallet.trim() || !nameKa.trim() || !nameEn.trim() || !phone.trim() || !email.trim() || !districtId || !idFront || !idBack)
       return setError(t.required);
+    if (!isWallet(wallet.trim())) return setError(t.badWallet);
     if (!EMAIL_RE.test(email.trim())) return setError(t.badEmail);
     if (!PHONE_RE.test(phone.trim())) return setError(t.badPhone);
 
     setBusy(true);
     try {
-      await api("/api/applications", { body: { nameKa, nameEn, phone, email, districtId, idFront, idBack } });
+      await api("/api/applications", {
+        body: { wallet: wallet.trim(), nameKa, nameEn, phone, email, districtId, idFront, idBack },
+      });
       setError("");
       setSent(true);
     } catch (e) {
@@ -95,30 +103,20 @@ export default function ApplyForm({ locale, dict }: { locale: Locale; dict: Dict
     return <div className="card mx-auto max-w-xl p-8 text-center text-sm text-slate-600">{t.alreadyMember}</div>;
   }
 
-  // The application is tied to the signed-in wallet, so the applicant proves they own it.
-  if (!signedIn) {
-    return (
-      <div className="card mx-auto max-w-xl p-8 text-center">
-        <p className="text-sm text-slate-600">{wallet ? t.signFirst : t.connectFirst}</p>
-        <div className="mt-5 flex justify-center">
-          {wallet ? (
-            <button className="btn btn-primary" disabled={signingIn} onClick={signIn}>
-              {dict.common.signIn}
-            </button>
-          ) : (
-            <WalletButton />
-          )}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="card mx-auto max-w-xl p-5">
       <div className="space-y-3">
         <div className="text-xs text-slate-500">
           {t.wallet}
-          <div className="mt-1 break-all font-mono text-sm text-slate-700">{wallet}</div>
+          <input
+            className="input mt-1 font-mono"
+            autoComplete="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            value={wallet}
+            onChange={(e) => setWallet(e.target.value)}
+          />
+          <p className="mt-1 text-slate-400">{t.walletHint}</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <input className="input" placeholder={t.fullNameKa} value={nameKa} onChange={(e) => setNameKa(e.target.value)} />

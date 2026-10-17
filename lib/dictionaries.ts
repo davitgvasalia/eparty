@@ -63,8 +63,8 @@ const en = {
     alreadyApplied: "An application for this wallet is already under review.",
     sent: "Your application has been sent. The administrator will review it.",
     privacy: "Your ID photos are seen only by the administrator and are deleted once the application is decided.",
-    connectFirst: "Connect your Solana wallet to apply. Your membership is tied to it.",
-    signFirst: "Sign the message in your wallet to prove it is yours.",
+    walletHint: "Paste your Phantom or Solflare address. Your membership is tied to it and you sign in with this wallet to vote.",
+    badWallet: "The wallet address doesn't look right.",
   },
   home: {
     welcome: "Welcome",
@@ -240,8 +240,8 @@ const ka: Dict = {
     alreadyApplied: "ამ ვოლეტის განაცხადი უკვე განხილვაშია.",
     sent: "განაცხადი გაიგზავნა. ადმინისტრატორი მას განიხილავს.",
     privacy: "პირადობის ფოტოებს ხედავს მხოლოდ ადმინისტრატორი და განაცხადის განხილვის შემდეგ იშლება.",
-    connectFirst: "განაცხადის შესავსებად დააკავშირეთ Solana ვოლეტი. წევრობა მასზე იქნება მიბმული.",
-    signFirst: "მოაწერეთ ხელი შეტყობინებას ვოლეტში, რომ დაადასტუროთ, რომ ის თქვენია.",
+    walletHint: "ჩასვით Phantom-ის ან Solflare-ის მისამართი. წევრობა მასზე იქნება მიბმული და ამ ვოლეტით შეხვალთ ხმის მისაცემად.",
+    badWallet: "ვოლეტის მისამართი არასწორია.",
   },
   home: {
     welcome: "კეთილი იყოს თქვენი მობრძანება",
