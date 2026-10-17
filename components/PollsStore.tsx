@@ -11,7 +11,7 @@ import {
 } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { X } from "lucide-react";
-import { pollFinished, pollStarted, type Member, type Poll } from "@/lib/model";
+import { pollFinished, pollStarted, type InitiativeStage, type Member, type Poll } from "@/lib/model";
 import type { PublicState } from "@/lib/server/state";
 
 const EMPTY: PublicState = {
@@ -171,6 +171,11 @@ export function useSession(): Session {
 export const usePolls = () => useStore().state.polls;
 export const useMembers = () => useStore().state.members;
 export const useInitiatives = () => useStore().state.initiatives;
+
+/** Initiatives of a stage still open for likes or votes (not expired, approved or rejected). */
+export const useOpenInitiativeCount = (stage: InitiativeStage) =>
+  useInitiatives().filter((i) => i.stage === stage && i.status === "pending").length;
+
 export const useDistricts = () => useStore().state.districts;
 
 /** Today's server date as YYYY-MM-DD, or "" before the first load. */

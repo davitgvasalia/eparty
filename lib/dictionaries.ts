@@ -7,6 +7,7 @@ const en = {
     home: "Home",
     members: "Members",
     polls: "Polls",
+    drafts: "Preparatory",
     initiatives: "Initiatives",
     results: "Completed",
     apply: "Join",
@@ -101,8 +102,9 @@ const en = {
     subtitle:
       "Proposals from members. Once 51% of members are in favor, an initiative becomes a poll. It expires if that does not happen within 10 days.",
     draftsSubtitle:
-      "New proposals start here. Once 1% of members like one, it moves to initiatives.",
-    tabs: { drafts: "Preparatory", initiatives: "Initiatives" },
+      "New proposals start here. Once 1% of members like one, it moves to initiatives. It is cancelled if that does not happen within 10 days.",
+    draftsTitle: "Preparatory initiatives",
+    empty: "Nothing here yet.",
     draft: "Preparatory",
     like: "Like",
     liked: "You liked this",
@@ -184,6 +186,7 @@ const ka: Dict = {
     home: "მთავარი",
     members: "წევრები",
     polls: "გამოკითხვები",
+    drafts: "მოსამზადებელი",
     initiatives: "ინიციატივები",
     results: "დასრულებული",
     apply: "გაწევრიანება",
@@ -278,8 +281,9 @@ const ka: Dict = {
     subtitle:
       "წევრების წინადადებები. როცა წევრების 51% მხარს დაუჭერს, ინიციატივა გადადის გამოკითხვაში. თუ ეს 10 დღეში არ მოხდა, ინიციატივა უქმდება.",
     draftsSubtitle:
-      "ახალი წინადადებები აქ იწყება. როცა წევრების 1%-ს მოეწონება, გადადის ინიციატივებში.",
-    tabs: { drafts: "მოსამზადებელი", initiatives: "ინიციატივები" },
+      "ახალი წინადადებები აქ იწყება. როცა წევრების 1%-ს მოეწონება, გადადის ინიციატივებში. თუ ეს 10 დღეში არ მოხდა, უქმდება.",
+    draftsTitle: "მოსამზადებელი ინიციატივები",
+    empty: "ჯერ აქ არაფერია.",
     draft: "მოსამზადებელი",
     like: "მომწონს",
     liked: "თქვენ მოგეწონათ",

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Trash2, Check, X, Lock, Plus, Pencil } from "lucide-react";
-import { isDraft } from "@/lib/model";
+import { isDraft, type Poll } from "@/lib/model";
 import type { Dict } from "@/lib/dictionaries";
 import { fmtDate, shortWallet, type Locale } from "@/lib/i18n";
 import { shrinkImage } from "@/lib/image";
@@ -13,6 +13,7 @@ import {
   useInitiatives,
   useIsFinished,
   usePolls,
+  useToday,
   useSession,
   useStore,
 } from "./PollsStore";
@@ -34,6 +35,7 @@ export default function AdminPanel({
 
   const polls = usePolls();
   const isFinished = useIsFinished();
+  const today = useToday();
   const initiatives = useInitiatives();
   const districts = useDistricts();
   // Applications and member contact details come from the admin-only endpoint.
@@ -58,6 +60,7 @@ export default function AdminPanel({
   const [endDate, setEndDate] = useState("");
   const [image, setImage] = useState("");
   const [pollFormOpen, setPollFormOpen] = useState(false);
+  const [editingPoll, setEditingPoll] = useState<string | null>(null);
 
   const loadAdmin = useCallback(async () => {
     try {
@@ -141,17 +144,30 @@ export default function AdminPanel({
     }
   };
 
-  const createPoll = async () => {
+  const savePoll = async () => {
     const options = optionsText
       .split("\n")
       .map((s) => s.trim())
       .filter(Boolean);
-    if (!qKa.trim() || !qEn.trim() || options.length < 2 || !startDate || !endDate) return;
+    // Options can't be changed when editing, so only a new poll needs them.
+    if (!qKa.trim() || !qEn.trim() || (!editingPoll && options.length < 2) || !startDate || !endDate) return;
     if (endDate < startDate) return;
-    const ok = await run("/api/admin/polls", {
-      body: { titleKa: qKa, titleEn: qEn, options, startsAt: startDate, endsAt: endDate, image },
-    });
+    const fields = { titleKa: qKa, titleEn: qEn, startsAt: startDate, endsAt: endDate, image };
+    const ok = editingPoll
+      ? await run(`/api/admin/polls/${editingPoll}`, { method: "PATCH", body: fields })
+      : await run("/api/admin/polls", { body: { ...fields, options } });
     if (ok) resetPollForm();
+  };
+
+  const editPoll = (p: Poll) => {
+    setEditingPoll(p.id);
+    setQKa(p.title.ka);
+    setQEn(p.title.en);
+    setOptionsText("");
+    setStartDate(p.startsAt ?? today);
+    setEndDate(p.endsAt);
+    setImage(p.image ?? "");
+    setPollFormOpen(true);
   };
 
   const resetPollForm = () => {
@@ -161,6 +177,7 @@ export default function AdminPanel({
     setStartDate("");
     setEndDate("");
     setImage("");
+    setEditingPoll(null);
     setPollFormOpen(false);
   };
 
@@ -359,13 +376,15 @@ export default function AdminPanel({
         <div className="space-y-6">
           {pollFormOpen ? (
             <div className="card p-5">
-              <h3 className="mb-4 font-semibold">{dict.admin.createPoll}</h3>
+              <h3 className="mb-4 font-semibold">{editingPoll ? dict.admin.edit : dict.admin.createPoll}</h3>
               <div className="space-y-3">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <input className="input" placeholder={dict.admin.pollTitleKa} value={qKa} onChange={(e) => setQKa(e.target.value)} />
                   <input className="input" placeholder={dict.admin.pollTitleEn} value={qEn} onChange={(e) => setQEn(e.target.value)} />
                 </div>
-                <textarea className="input min-h-[96px]" placeholder={dict.admin.optionsHint} value={optionsText} onChange={(e) => setOptionsText(e.target.value)} />
+                {!editingPoll && (
+                  <textarea className="input min-h-[96px]" placeholder={dict.admin.optionsHint} value={optionsText} onChange={(e) => setOptionsText(e.target.value)} />
+                )}
                 <div className="grid gap-3 sm:grid-cols-2">
                   <label className="block text-xs text-slate-500">
                     {dict.admin.startDate}
@@ -403,8 +422,8 @@ export default function AdminPanel({
                   <button className="btn btn-ghost" onClick={resetPollForm}>
                     {dict.admin.cancel}
                   </button>
-                  <button className="btn btn-primary" onClick={createPoll}>
-                    {dict.admin.create}
+                  <button className="btn btn-primary" onClick={savePoll}>
+                    {editingPoll ? dict.admin.save : dict.admin.create}
                   </button>
                 </div>
               </div>
@@ -429,13 +448,18 @@ export default function AdminPanel({
                     </div>
                   </div>
                 </div>
-                {isFinished(p) ? (
-                  <span className="text-xs text-slate-400">{dict.admin.closed}</span>
-                ) : (
-                  <button className="btn btn-ghost shrink-0" onClick={() => run(`/api/admin/polls/${p.id}/close`)}>
-                    {dict.admin.closePoll}
+                <div className="flex shrink-0 items-center gap-1">
+                  <button className="btn btn-ghost !px-2 !py-1.5" aria-label={dict.admin.edit} onClick={() => editPoll(p)}>
+                    <Pencil size={16} />
                   </button>
-                )}
+                  {isFinished(p) ? (
+                    <span className="text-xs text-slate-400">{dict.admin.closed}</span>
+                  ) : (
+                    <button className="btn btn-ghost" onClick={() => run(`/api/admin/polls/${p.id}/close`)}>
+                      {dict.admin.closePoll}
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>

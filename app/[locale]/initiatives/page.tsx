@@ -11,9 +11,9 @@ export default function InitiativesPage({ params }: { params: { locale: string }
 
   return (
     <>
-      <PageHeader title={dict.initiatives.title} />
+      <PageHeader title={dict.initiatives.title} subtitle={dict.initiatives.subtitle} />
       <Notice>{dict.common.demoNotice}</Notice>
-      <InitiativeList locale={locale} dict={dict} />
+      <InitiativeList stage="initiative" locale={locale} dict={dict} />
     </>
   );
 }

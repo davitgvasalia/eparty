@@ -8,12 +8,14 @@ import {
   Users,
   Vote,
   Lightbulb,
+  FilePen,
   CircleCheck,
   ShieldCheck,
   UserPlus,
 } from "lucide-react";
 import type { Dict } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
+import { useOpenInitiativeCount, useSession } from "./PollsStore";
 import ThemeToggle from "./ThemeToggle";
 import WalletButton from "./WalletButton";
 
@@ -21,6 +23,7 @@ const ITEMS = [
   { key: "home", href: "/", icon: LayoutDashboard },
   { key: "members", href: "/members", icon: Users },
   { key: "polls", href: "/polls", icon: Vote },
+  { key: "drafts", href: "/drafts", icon: FilePen },
   { key: "initiatives", href: "/initiatives", icon: Lightbulb },
   { key: "results", href: "/results", icon: CircleCheck },
   { key: "apply", href: "/apply", icon: UserPlus },
@@ -43,6 +46,15 @@ export default function Shell({
   const other: Locale = locale === "ka" ? "en" : "ka";
   const switchHref = pathname.replace(/^\/(ka|en)/, `/${other}`);
 
+  const { member, isAdmin } = useSession();
+  const counts: Partial<Record<(typeof ITEMS)[number]["key"], number>> = {
+    drafts: useOpenInitiativeCount("draft"),
+    initiatives: useOpenInitiativeCount("initiative"),
+  };
+  // Members don't need "Join" and only the admin needs "Admin"; this also keeps the
+  // mobile bar to at most seven items.
+  const items = ITEMS.filter(({ key }) => (key !== "apply" || !member) && (key !== "admin" || isAdmin));
+
   return (
     <div className="min-h-screen md:flex">
       {/* Sidebar (desktop) */}
@@ -57,7 +69,7 @@ export default function Shell({
           </div>
         </div>
         <nav className="flex-1 space-y-1 p-3">
-          {ITEMS.map(({ key, href, icon: Icon }) => (
+          {items.map(({ key, href, icon: Icon }) => (
             <Link
               key={key}
               href={`/${locale}${href === "/" ? "" : href}`}
@@ -68,7 +80,12 @@ export default function Shell({
               }`}
             >
               <Icon size={18} />
-              {dict.nav[key]}
+              <span className="flex-1">{dict.nav[key]}</span>
+              {!!counts[key] && (
+                <span className="rounded-full bg-indigo-600 px-2 py-0.5 text-xs font-semibold text-white">
+                  {counts[key]}
+                </span>
+              )}
             </Link>
           ))}
         </nav>
@@ -103,16 +120,23 @@ export default function Shell({
       </div>
 
       {/* Bottom nav (mobile) */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-7 border-t border-slate-200 bg-surface pb-safe md:hidden">
-        {ITEMS.map(({ key, href, icon: Icon }) => (
+      <nav className="fixed inset-x-0 bottom-0 z-30 flex border-t border-slate-200 bg-surface pb-safe md:hidden">
+        {items.map(({ key, href, icon: Icon }) => (
           <Link
             key={key}
             href={`/${locale}${href === "/" ? "" : href}`}
-            className={`flex flex-col items-center gap-1 py-3 text-[11px] ${
+            className={`flex min-w-0 flex-1 flex-col items-center gap-1 py-3 text-[11px] ${
               isActive(href) ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500"
             }`}
           >
-            <Icon size={22} />
+            <span className="relative">
+              <Icon size={22} />
+              {!!counts[key] && (
+                <span className="absolute -right-2.5 -top-1.5 min-w-[18px] rounded-full bg-rose-600 px-1 text-center text-[10px] font-semibold leading-[18px] text-white">
+                  {counts[key]}
+                </span>
+              )}
+            </span>
             <span className="max-w-full truncate px-0.5">{dict.nav[key]}</span>
           </Link>
         ))}

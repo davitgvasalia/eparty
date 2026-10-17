@@ -86,21 +86,23 @@ export const draftLikesNeeded = (memberCount: number) =>
 /** Share of all members that must vote yes for an initiative to become a poll. */
 export const INITIATIVE_THRESHOLD = 0.51;
 
-/** Days an initiative has to reach the threshold before it expires. */
+/** Days a draft, and then an initiative, has to reach its threshold before it expires. */
 export const INITIATIVE_DAYS = 10;
 
-/** Days a poll opened from an initiative stays open. */
-export const POLL_DAYS = 14;
+/** Days a poll opened from an initiative stays open (the admin can change the dates). */
+export const POLL_DAYS = 10;
 
 /** Initiatives that must reach a poll before their author becomes a deputy candidate. */
 export const CANDIDATE_INITIATIVES = 10;
 
 export const isDraft = (i: Pick<Initiative, "stage">) => i.stage === "draft";
 
-/** Last day (inclusive, ISO date) members can vote on the initiative. Drafts have none. */
+/**
+ * Last day (inclusive, ISO date) of the current stage: a draft counts from its creation,
+ * an initiative from the day it was promoted.
+ */
 export const initiativeDeadline = (i: Pick<Initiative, "stage" | "createdAt" | "promotedAt">) => {
-  const start = i.promotedAt ?? i.createdAt;
-  if (isDraft(i) || !start) return undefined;
+  const start = isDraft(i) ? i.createdAt : i.promotedAt ?? i.createdAt;
   return addDays(start, INITIATIVE_DAYS);
 };
 

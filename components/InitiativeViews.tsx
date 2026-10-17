@@ -8,6 +8,7 @@ import {
   initiativeDeadline,
   isDraft,
   type Initiative,
+  type InitiativeStage,
   type InitiativeVote,
 } from "@/lib/model";
 import type { Dict } from "@/lib/dictionaries";
@@ -143,12 +144,11 @@ function InitiativeCard({
   );
 }
 
-export function InitiativeList({ locale, dict }: { locale: Locale; dict: Dict }) {
-  const initiatives = useInitiatives();
+/** Form for proposing a new initiative; it starts in the preparatory stage. */
+export function InitiativeForm({ dict }: { dict: Dict }) {
   const { run } = useStore();
   const { member } = useSession();
 
-  const [tab, setTab] = useState<"drafts" | "initiatives">("drafts");
   const [formOpen, setFormOpen] = useState(false);
   const [titleKa, setTitleKa] = useState("");
   const [titleEn, setTitleEn] = useState("");
@@ -167,69 +167,52 @@ export function InitiativeList({ locale, dict }: { locale: Locale; dict: Dict })
     if (!member) return;
     if (!titleKa.trim() || !titleEn.trim() || !summaryKa.trim() || !summaryEn.trim()) return;
     const ok = await run("/api/initiatives", { body: { titleKa, titleEn, summaryKa, summaryEn } });
-    if (ok) {
-      resetForm();
-      setTab("drafts");
-    }
+    if (ok) resetForm();
   };
 
-  return (
-    <div className="space-y-6">
-      {formOpen ? (
-        <div className="card p-5">
-          <h3 className="mb-4 font-semibold">{dict.initiatives.add}</h3>
-          <div className="space-y-3">
-            <div className="grid gap-3 sm:grid-cols-2">
-              <input className="input" placeholder={dict.initiatives.titleKa} value={titleKa} onChange={(e) => setTitleKa(e.target.value)} />
-              <input className="input" placeholder={dict.initiatives.titleEn} value={titleEn} onChange={(e) => setTitleEn(e.target.value)} />
-              <textarea className="input min-h-[96px]" placeholder={dict.initiatives.summaryKa} value={summaryKa} onChange={(e) => setSummaryKa(e.target.value)} />
-              <textarea className="input min-h-[96px]" placeholder={dict.initiatives.summaryEn} value={summaryEn} onChange={(e) => setSummaryEn(e.target.value)} />
-            </div>
-            <div className="flex justify-end gap-2">
-              <button className="btn btn-ghost" onClick={resetForm}>
-                {dict.admin.cancel}
-              </button>
-              <button className="btn btn-primary" onClick={addInitiative}>
-                {dict.admin.add}
-              </button>
-            </div>
-          </div>
+  return formOpen ? (
+    <div className="card p-5">
+      <h3 className="mb-4 font-semibold">{dict.initiatives.add}</h3>
+      <div className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <input className="input" placeholder={dict.initiatives.titleKa} value={titleKa} onChange={(e) => setTitleKa(e.target.value)} />
+          <input className="input" placeholder={dict.initiatives.titleEn} value={titleEn} onChange={(e) => setTitleEn(e.target.value)} />
+          <textarea className="input min-h-[96px]" placeholder={dict.initiatives.summaryKa} value={summaryKa} onChange={(e) => setSummaryKa(e.target.value)} />
+          <textarea className="input min-h-[96px]" placeholder={dict.initiatives.summaryEn} value={summaryEn} onChange={(e) => setSummaryEn(e.target.value)} />
         </div>
-      ) : (
-        <div className="flex flex-wrap items-center gap-3">
-          <button className="btn btn-primary" disabled={!member} onClick={() => setFormOpen(true)}>
-            <Plus size={16} /> {dict.initiatives.add}
+        <div className="flex justify-end gap-2">
+          <button className="btn btn-ghost" onClick={resetForm}>
+            {dict.admin.cancel}
           </button>
-          <SignInHint dict={dict} membersOnly={dict.initiatives.membersOnly} />
+          <button className="btn btn-primary" onClick={addInitiative}>
+            {dict.admin.add}
+          </button>
         </div>
-      )}
-
-      <div>
-        <div className="mb-3 inline-flex rounded-xl bg-slate-100 p-1">
-          {(["drafts", "initiatives"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
-                tab === t ? "bg-surface shadow-sm" : "text-slate-500 hover:text-slate-800"
-              }`}
-            >
-              {dict.initiatives.tabs[t]} ({initiatives.filter((i) => isDraft(i) === (t === "drafts")).length})
-            </button>
-          ))}
-        </div>
-        <p className="text-sm text-slate-500">
-          {tab === "drafts" ? dict.initiatives.draftsSubtitle : dict.initiatives.subtitle}
-        </p>
       </div>
+    </div>
+  ) : (
+    <div className="flex flex-wrap items-center gap-3">
+      <button className="btn btn-primary" disabled={!member} onClick={() => setFormOpen(true)}>
+        <Plus size={16} /> {dict.initiatives.add}
+      </button>
+      <SignInHint dict={dict} membersOnly={dict.initiatives.membersOnly} />
+    </div>
+  );
+}
 
-      <div className="grid gap-5 md:grid-cols-2">
-        {initiatives
-          .filter((i) => isDraft(i) === (tab === "drafts"))
-          .map((i) => (
-            <InitiativeCard key={i.id} initiative={i} locale={locale} dict={dict} />
-          ))}
-      </div>
+/** Initiatives of one stage, open ones first. */
+export function InitiativeList({ stage, locale, dict }: { stage: InitiativeStage; locale: Locale; dict: Dict }) {
+  const initiatives = useInitiatives()
+    .filter((i) => i.stage === stage)
+    .sort((a, b) => Number(b.status === "pending") - Number(a.status === "pending"));
+
+  if (initiatives.length === 0) return <p className="text-sm text-slate-500">{dict.initiatives.empty}</p>;
+
+  return (
+    <div className="grid gap-5 md:grid-cols-2">
+      {initiatives.map((i) => (
+        <InitiativeCard key={i.id} initiative={i} locale={locale} dict={dict} />
+      ))}
     </div>
   );
 }
