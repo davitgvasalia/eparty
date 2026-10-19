@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { MOBILE_WALLET_ADAPTER, isAndroid } from "@/lib/wallet";
 
 // Rendered only on the client to avoid hydration mismatches.
 const WalletMultiButton = dynamic(
@@ -25,6 +27,14 @@ export default function WalletButton() {
   const params = useParams<{ locale?: string }>();
   const ka = params?.locale !== "en";
   const [mobileLinks, setMobileLinks] = useState<{ phantom: string; solflare: string } | null>(null);
+  const { wallet, wallets, select } = useWallet();
+
+  // On Android preselect the Mobile Wallet Adapter, so the button connects straight away
+  // (Android opens Phantom or Solflare) instead of asking which wallet to use.
+  const mobileAdapter = wallets.find((w) => w.adapter.name === MOBILE_WALLET_ADAPTER);
+  useEffect(() => {
+    if (!wallet && mobileAdapter && isAndroid()) select(mobileAdapter.adapter.name);
+  }, [wallet, mobileAdapter, select]);
 
   useEffect(() => {
     if (!needsWalletBrowser()) return;
