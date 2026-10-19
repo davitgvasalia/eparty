@@ -101,6 +101,8 @@ model PollVote {
   member    Member     @relation(fields: [memberId], references: [id])
   optionId  String
   option    PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  // Signature of the vote fee transfer to the treasury; unique so one payment buys one vote.
+  feeTx     String?    @unique
   createdAt DateTime   @default(now())
 
   @@id([pollId, memberId])

@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
 import type { Poll } from "@/lib/model";
+import { VOTE_FEE_LAMPORTS, VOTE_FEE_SOL, VOTE_FEE_WALLET } from "@/lib/wallet";
 import { totalVotes } from "@/lib/model";
 import { fmtDate, type Locale } from "@/lib/i18n";
 import type { Dict } from "@/lib/dictionaries";
@@ -18,20 +21,48 @@ export default function PollCard({
   locale: Locale;
   dict: Dict;
 }) {
-  const { run } = useStore();
+  const { run, notify } = useStore();
   const { member } = useSession();
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction } = useWallet();
   const started = useHasStarted()(poll);
   const [selected, setSelected] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [feeTx, setFeeTx] = useState<string>();
 
   // Only party members vote: one member, one vote per poll (checked again on the server).
   const voted = !!poll.myVote;
 
+  // The vote fee is paid first; a paid signature is kept so a failed vote can be retried without paying again.
+  const payFee = async (): Promise<string> => {
+    if (feeTx) return feeTx;
+    if (!publicKey) throw new Error(dict.common.connectToVote);
+    const latest = await connection.getLatestBlockhash();
+    const tx = new Transaction({ feePayer: publicKey, ...latest }).add(
+      SystemProgram.transfer({
+        fromPubkey: publicKey,
+        toPubkey: new PublicKey(VOTE_FEE_WALLET),
+        lamports: VOTE_FEE_LAMPORTS,
+      })
+    );
+    const signature = await sendTransaction(tx, connection);
+    const { value } = await connection.confirmTransaction({ signature, ...latest }, "confirmed");
+    if (value.err) throw new Error("Payment transaction failed");
+    setFeeTx(signature);
+    return signature;
+  };
+
   const castVote = async () => {
     if (!member || !selected || !started) return;
     setBusy(true);
-    await run(`/api/polls/${poll.id}/vote`, { body: { optionId: selected } });
-    setBusy(false);
+    try {
+      const paid = VOTE_FEE_WALLET ? await payFee() : undefined;
+      await run(`/api/polls/${poll.id}/vote`, { body: { optionId: selected, feeTx: paid } });
+    } catch (e) {
+      notify((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -88,6 +119,7 @@ export default function PollCard({
               onClick={castVote}
             >
               {dict.common.vote}
+              {VOTE_FEE_WALLET && ` · ${VOTE_FEE_SOL} SOL`}
             </button>
           </div>
         </div>

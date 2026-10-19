@@ -29,6 +29,7 @@ npm run dev
 3. Environment Variables-ში დაამატეთ (იხ. `.env.example`):
    - `NEXT_PUBLIC_SOLANA_RPC` = `https://api.devnet.solana.com`
    - `NEXT_PUBLIC_ADMIN_WALLET` = ადმინისტრატორის ვოლეტის მისამართი
+   - `NEXT_PUBLIC_VOTE_FEE_WALLET` = ხაზინის მისამართი, რომელზეც ყოველი ხმის მიცემისას ირიცხება `NEXT_PUBLIC_VOTE_FEE_SOL` (ნაგულისხმევად 0.01 SOL). ცარიელი = ხმის მიცემა უფასოა
 4. დააჭირეთ **Deploy**. რამდენიმე წუთში მიიღებთ საჯარო მისამართს `xxx.vercel.app`.
 5. შემდეგ **Settings → Domains**-ში დაამატეთ საკუთარი დომენი.
 

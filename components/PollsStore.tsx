@@ -42,6 +42,8 @@ interface Store {
   refresh: () => Promise<void>;
   /** Runs an API call, then reloads the data. Errors show in a toast and return false. */
   run: (path: string, init?: { method?: string; body?: unknown }) => Promise<boolean>;
+  /** Shows an error toast. */
+  notify: (message: string) => void;
   signIn: () => Promise<void>;
   signingIn: boolean;
 }
@@ -120,7 +122,7 @@ export function PollsProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <StoreContext.Provider value={{ state, loaded, refresh, run, signIn, signingIn }}>
+    <StoreContext.Provider value={{ state, loaded, refresh, run, notify: setToast, signIn, signingIn }}>
       {children}
       {toast && (
         <div className="fixed inset-x-4 bottom-20 z-50 mx-auto flex max-w-md items-start gap-3 rounded-xl border border-rose-700/30 bg-rose-50 px-4 py-3 text-sm text-rose-700 shadow-lg md:bottom-6">
