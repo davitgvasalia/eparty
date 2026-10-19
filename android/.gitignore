@@ -1,0 +1,8 @@
+# Build output and machine-specific settings. The signing key lives outside the repo (../../android-keys).
+.gradle
+build
+app/build
+local.properties
+*.apk
+*.aab
+*.idsig

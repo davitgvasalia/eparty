@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "ge.hrgeo.ep",
+      "sha256_cert_fingerprints": [
+        "D7:2C:8E:60:2D:20:A8:31:7C:9A:3E:A7:4A:2D:A4:4A:BF:6A:88:88:60:E0:99:9D:06:C2:36:CA:72:D3:3D:B2"
+      ]
+    }
+  }
+]
