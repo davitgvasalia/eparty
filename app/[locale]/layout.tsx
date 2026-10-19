@@ -23,6 +23,11 @@ export async function generateMetadata({
     title: dict.appName,
     description: dict.tagline,
     manifest: "/manifest.webmanifest",
+    icons: {
+      icon: [{ url: "/icons/icon.svg", type: "image/svg+xml" }, { url: "/icons/icon-192.png", sizes: "192x192" }],
+      apple: "/icons/apple-touch-icon.png",
+    },
+    appleWebApp: { capable: true, title: "E-Party", statusBarStyle: "default" },
   };
 }
 
