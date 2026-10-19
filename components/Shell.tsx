@@ -96,7 +96,7 @@ export default function Shell({
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Top bar */}
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-slate-200 bg-surface/80 px-4 backdrop-blur md:px-8">
+        <header className="sticky top-0 z-20 flex min-h-16 items-center justify-between gap-3 border-b py-2 border-slate-200 bg-surface/80 px-4 backdrop-blur md:px-8">
           <span className="text-sm font-semibold md:hidden">{dict.appName}</span>
           <span className="hidden text-sm text-slate-500 md:block">
             {dict.tagline}

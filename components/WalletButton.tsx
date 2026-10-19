@@ -10,14 +10,15 @@ const WalletMultiButton = dynamic(
   { ssr: false }
 );
 
-// Mobile browsers (Safari/Chrome) never get the wallet's injected provider, so the
-// adapter reports "not installed" even when the app is on the phone. There the page
-// has to be reopened inside the wallet's in-app browser via its universal link.
+// Mobile browsers never get the wallet's injected provider. On Android (Chrome and the
+// E-Party app) the Mobile Wallet Adapter, which WalletProvider adds on its own, connects
+// to Phantom or Solflare directly. iOS has no such adapter, so there the page has to be
+// reopened inside the wallet's in-app browser via its universal link.
 function needsWalletBrowser() {
   const w = window as unknown as { phantom?: { solana?: unknown }; solana?: unknown; solflare?: unknown };
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isIos = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   const hasProvider = Boolean(w.phantom?.solana || w.solana || w.solflare);
-  return isMobile && !hasProvider;
+  return isIos && !hasProvider;
 }
 
 export default function WalletButton() {
@@ -38,7 +39,7 @@ export default function WalletButton() {
   if (mobileLinks) {
     return (
       <div className="flex flex-col items-center gap-1">
-        <a href={mobileLinks.phantom} className="btn btn-primary">
+        <a href={mobileLinks.phantom} className="btn btn-primary whitespace-nowrap">
           {ka ? "Phantom-ში გახსნა" : "Open in Phantom"}
         </a>
         <a href={mobileLinks.solflare} className="text-xs text-indigo-600 hover:underline dark:text-indigo-400">
