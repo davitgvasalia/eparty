@@ -123,6 +123,8 @@ export async function loadAdminState(): Promise<AdminState> {
       candidate: false, // not needed in the admin view
       phone: m.phone ?? undefined,
       email: m.email ?? undefined,
+      idFrontUrl: m.idFront ? `/api/admin/members/${m.id}/photo/front` : undefined,
+      idBackUrl: m.idBack ? `/api/admin/members/${m.id}/photo/back` : undefined,
     })),
     applications: applications.map((a) => ({
       id: a.id,

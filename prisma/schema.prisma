@@ -45,7 +45,10 @@ model Member {
   district        District?        @relation(fields: [districtId], references: [id])
   phone           String?
   email           String?
-  joined          String // YYYY-MM-DD
+  // ID photo file names in storage/ids, when the administrator added them directly.
+  idFront         String?
+  idBack          String?
+  joined         String // YYYY-MM-DD
   // Removed members are kept so their past poll votes still count.
   active          Boolean          @default(true)
   initiatives     Initiative[]

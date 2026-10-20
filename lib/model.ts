@@ -19,6 +19,8 @@ export interface Member {
   // Contact details are only sent to the administrator.
   phone?: string;
   email?: string;
+  idFrontUrl?: string;
+  idBackUrl?: string;
 }
 
 /** A membership request, as the administrator sees it. */

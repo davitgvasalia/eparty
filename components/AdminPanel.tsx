@@ -6,7 +6,10 @@ import { isDraft, type Poll } from "@/lib/model";
 import type { Dict } from "@/lib/dictionaries";
 import { fmtDate, shortWallet, type Locale } from "@/lib/i18n";
 import { shrinkImage } from "@/lib/image";
+import type { Role } from "@/lib/model";
 import type { AdminState } from "@/lib/server/state";
+import { isWallet } from "@/lib/wallet";
+import { EMAIL_RE, IdPhoto, PHONE_RE } from "./ApplyForm";
 import {
   api,
   useDistricts,
@@ -29,8 +32,8 @@ export default function AdminPanel({
   locale: Locale;
   dict: Dict;
 }) {
-  const { wallet: connected, signedIn, isAdmin, demoAdmin, signIn, signingIn } = useSession();
-  const { run: runPublic } = useStore();
+  const { wallet: connected, member: me, signedIn, isAdmin, demoAdmin, signIn, signingIn } = useSession();
+  const { run: runPublic, refresh } = useStore();
   const [tab, setTab] = useState<Tab>("applications");
 
   const polls = usePolls();
@@ -49,6 +52,11 @@ export default function AdminPanel({
   const [memberDistrict, setMemberDistrict] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState<Role>("member");
+  const [idFront, setIdFront] = useState("");
+  const [idBack, setIdBack] = useState("");
+  const [memberError, setMemberError] = useState("");
+  const [addingMember, setAddingMember] = useState(false);
   const [districtKa, setDistrictKa] = useState("");
   const [districtEn, setDistrictEn] = useState("");
   const [editingDistrict, setEditingDistrict] = useState<string | null>(null);
@@ -103,18 +111,37 @@ export default function AdminPanel({
     );
   }
 
+  // The server answers known problems with an apply dictionary key (badEmail, alreadyMember, ...).
+  const applyMessage = (code: string) => (code in dict.apply ? dict.apply[code as keyof typeof dict.apply] : code);
+
   const addMember = async () => {
-    if (!nameKa.trim() || !nameEn.trim() || !wallet.trim()) return;
-    const ok = await run("/api/admin/members", {
-      body: { nameKa, nameEn, wallet, districtId: memberDistrict, phone, email },
-    });
-    if (!ok) return;
+    if (!wallet.trim() || !nameKa.trim() || !nameEn.trim() || !phone.trim() || !email.trim() || !memberDistrict || !idFront || !idBack)
+      return setMemberError(dict.apply.required);
+    if (!isWallet(wallet.trim())) return setMemberError(dict.apply.badWallet);
+    if (!EMAIL_RE.test(email.trim())) return setMemberError(dict.apply.badEmail);
+    if (!PHONE_RE.test(phone.trim())) return setMemberError(dict.apply.badPhone);
+
+    setAddingMember(true);
+    try {
+      await api("/api/admin/members", {
+        body: { nameKa, nameEn, wallet: wallet.trim(), districtId: memberDistrict, phone, email, role, idFront, idBack },
+      });
+    } catch (e) {
+      return setMemberError(applyMessage((e as Error).message));
+    } finally {
+      setAddingMember(false);
+    }
+    await Promise.all([refresh(), loadAdmin()]);
+    setMemberError("");
     setNameKa("");
     setNameEn("");
     setWallet("");
     setMemberDistrict("");
     setPhone("");
     setEmail("");
+    setRole("member");
+    setIdFront("");
+    setIdBack("");
   };
 
   const districtName = (id?: string) => districts.find((d) => d.id === id)?.name[locale] ?? "-";
@@ -334,13 +361,19 @@ export default function AdminPanel({
                   </option>
                 ))}
               </select>
-              <button className="btn btn-primary w-full" onClick={addMember}>
+              <select className="input" aria-label={dict.members.role} value={role} onChange={(e) => setRole(e.target.value as Role)}>
+                <option value="member">{dict.members.member}</option>
+                <option value="admin">{dict.members.admin}</option>
+              </select>
+              <IdPhoto label={dict.apply.idFront} value={idFront} onChange={setIdFront} removeLabel={dict.admin.removeImage} />
+              <IdPhoto label={dict.apply.idBack} value={idBack} onChange={setIdBack} removeLabel={dict.admin.removeImage} />              {memberError && <p className="text-sm text-rose-700">{memberError}</p>}
+              <button className="btn btn-primary w-full" disabled={addingMember} onClick={addMember}>
                 {dict.admin.add}
               </button>
             </div>
           </div>
           <div className="card overflow-x-auto lg:col-span-2">
-            <table className="w-full min-w-[560px] text-left text-sm">
+            <table className="w-full min-w-[680px] text-left text-sm">
               <tbody className="divide-y divide-slate-100">
                 {members.map((m) => (
                   <tr key={m.id}>
@@ -351,8 +384,32 @@ export default function AdminPanel({
                     <td className="px-5 py-3 text-xs text-slate-500">
                       <div>{m.phone ?? "-"}</div>
                       <div>{m.email ?? ""}</div>
+                      {[
+                        [dict.apply.idFront, m.idFrontUrl],
+                        [dict.apply.idBack, m.idBackUrl],
+                      ].map(
+                        ([label, src]) =>
+                          src && (
+                            <a key={label} href={src} target="_blank" rel="noreferrer" className="block underline">
+                              {label}
+                            </a>
+                          )
+                      )}
                     </td>
                     <td className="px-5 py-3 font-mono text-xs text-slate-500">{shortWallet(m.wallet)}</td>
+                    <td className="px-5 py-3">
+                      <select
+                        className="input !py-1.5 text-xs"
+                        aria-label={dict.members.role}
+                        value={m.role}
+                        // Demoting yourself would lock you out of this panel; the server refuses too.
+                        disabled={m.id === me?.id}
+                        onChange={(e) => run(`/api/admin/members/${m.id}`, { method: "PATCH", body: { role: e.target.value } })}
+                      >
+                        <option value="member">{dict.members.member}</option>
+                        <option value="admin">{dict.members.admin}</option>
+                      </select>
+                    </td>
                     <td className="px-5 py-3 text-right">
                       {m.role !== "admin" && (
                         <button

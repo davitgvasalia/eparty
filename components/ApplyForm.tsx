@@ -8,10 +8,10 @@ import { shrinkImage } from "@/lib/image";
 import { isWallet } from "@/lib/wallet";
 import { api, useDistricts, useSession } from "./PollsStore";
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_RE = /^\+?[\d\s()-]{6,20}$/;
+export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const PHONE_RE = /^\+?[\d\s()-]{6,20}$/;
 
-function IdPhoto({
+export function IdPhoto({
   label,
   value,
   onChange,
