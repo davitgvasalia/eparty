@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import "../globals.css";
+import { ChatProvider } from "@/components/ChatStore";
 import Providers from "@/components/Providers";
 import Shell from "@/components/Shell";
 import { themeInitScript } from "@/components/ThemeToggle";
@@ -57,9 +58,11 @@ export default function LocaleLayout({
       </head>
       <body>
         <Providers>
-          <Shell locale={locale} dict={dict}>
-            {children}
-          </Shell>
+          <ChatProvider>
+            <Shell locale={locale} dict={dict}>
+              {children}
+            </Shell>
+          </ChatProvider>
         </Providers>
       </body>
     </html>

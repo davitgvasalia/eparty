@@ -15,6 +15,7 @@
 ```
 /srv/eparty/app          კოდი (git)
 /srv/eparty/storage/ids  პირადობის ფოტოები (მხოლოდ აპს აქვს წვდომა)
+/srv/eparty/storage/chat ჩატის ფაილები, სურათები და ხმოვანი შეტყობინებები
 /srv/eparty/backups      სარეზერვო ასლები
 /srv/eparty/.db-password ბაზის პაროლი
 ```

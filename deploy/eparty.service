@@ -17,7 +17,7 @@ ExecStart=/usr/bin/node node_modules/next/dist/bin/next start -H 127.0.0.1 -p 30
 Restart=always
 RestartSec=5
 
-# Hardening: the app may only write its ID photo folder.
+# Hardening: the app may only write its storage (ID photos, chat files) and build cache.
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict

@@ -12,9 +12,11 @@ import {
   CircleCheck,
   ShieldCheck,
   UserPlus,
+  MessageCircle,
 } from "lucide-react";
 import type { Dict } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
+import { useChat } from "./ChatStore";
 import { useOpenInitiativeCount, useSession } from "./PollsStore";
 import ThemeToggle from "./ThemeToggle";
 import WalletButton from "./WalletButton";
@@ -26,6 +28,7 @@ const ITEMS = [
   { key: "drafts", href: "/drafts", icon: FilePen },
   { key: "initiatives", href: "/initiatives", icon: Lightbulb },
   { key: "results", href: "/results", icon: CircleCheck },
+  { key: "chat", href: "/chat", icon: MessageCircle },
   { key: "apply", href: "/apply", icon: UserPlus },
   { key: "admin", href: "/admin", icon: ShieldCheck },
 ] as const;
@@ -47,13 +50,19 @@ export default function Shell({
   const switchHref = pathname.replace(/^\/(ka|en)/, `/${other}`);
 
   const { member, isAdmin } = useSession();
+  const chat = useChat();
   const counts: Partial<Record<(typeof ITEMS)[number]["key"], number>> = {
     drafts: useOpenInitiativeCount("draft"),
     initiatives: useOpenInitiativeCount("initiative"),
+    chat: chat.unread,
   };
-  // Members don't need "Join" and only the admin needs "Admin"; this also keeps the
-  // mobile bar to at most seven items.
-  const items = ITEMS.filter(({ key }) => (key !== "apply" || !member) && (key !== "admin" || isAdmin));
+  // Members don't need "Join", only the admin needs "Admin" and the chat is for those
+  // signed in. The mobile bar shows the chat in the top bar instead, keeping it to at most
+  // seven items.
+  const items = ITEMS.filter(
+    ({ key }) => (key !== "apply" || !member) && (key !== "admin" || isAdmin) && (key !== "chat" || chat.enabled)
+  );
+  const mobileItems = items.filter(({ key }) => key !== "chat");
 
   return (
     <div className="min-h-screen md:flex">
@@ -102,6 +111,22 @@ export default function Shell({
             {dict.tagline}
           </span>
           <div className="flex items-center gap-3">
+            {chat.enabled && (
+              <Link
+                href={`/${locale}/chat`}
+                aria-label={dict.nav.chat}
+                className={`relative rounded-xl border border-slate-200 p-2 md:hidden ${
+                  isActive("/chat") ? "text-indigo-600 dark:text-indigo-400" : "text-slate-700"
+                }`}
+              >
+                <MessageCircle size={20} />
+                {!!chat.unread && (
+                  <span className="absolute -right-1.5 -top-1.5 min-w-[18px] rounded-full bg-rose-600 px-1 text-center text-[10px] font-semibold leading-[18px] text-white">
+                    {chat.unread}
+                  </span>
+                )}
+              </Link>
+            )}
             <Link
               href={switchHref}
               className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
@@ -121,7 +146,7 @@ export default function Shell({
 
       {/* Bottom nav (mobile) */}
       <nav className="fixed inset-x-0 bottom-0 z-30 flex border-t border-slate-200 bg-surface pb-safe md:hidden">
-        {items.map(({ key, href, icon: Icon }) => (
+        {mobileItems.map(({ key, href, icon: Icon }) => (
           <Link
             key={key}
             href={`/${locale}${href === "/" ? "" : href}`}

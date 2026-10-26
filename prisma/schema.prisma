@@ -15,6 +15,18 @@ enum Role {
   member
 }
 
+enum ChatKind {
+  general // the one chat every member is in
+  group // made by the administrator, with chosen members
+  direct // between two members
+}
+
+enum AttachmentKind {
+  image
+  voice
+  file
+}
+
 enum InitiativeStage {
   draft
   initiative
@@ -48,13 +60,15 @@ model Member {
   // ID photo file names in storage/ids, when the administrator added them directly.
   idFront         String?
   idBack          String?
-  joined         String // YYYY-MM-DD
+  joined          String // YYYY-MM-DD
   // Removed members are kept so their past poll votes still count.
   active          Boolean          @default(true)
   initiatives     Initiative[]
   pollVotes       PollVote[]
   initiativeVotes InitiativeVote[]
   likes           InitiativeLike[]
+  chats           ChatMember[]
+  messages        Message[]
 }
 
 model Application {
@@ -147,4 +161,63 @@ model InitiativeVote {
   createdAt    DateTime   @default(now())
 
   @@id([initiativeId, memberId])
+}
+
+model Chat {
+  id        String       @id @default(cuid())
+  kind      ChatKind
+  name      String? // groups only
+  // Direct chats: the two member ids, sorted and joined by ":", so a pair has one chat.
+  directKey String?      @unique
+  createdAt DateTime     @default(now())
+  // Time of the last message, for ordering the chat list.
+  lastAt    DateTime     @default(now())
+  members   ChatMember[]
+  messages  Message[]
+}
+
+// Who is in a group or direct chat. Everyone is in the general chat, so there a row only
+// remembers how far the member has read.
+model ChatMember {
+  chatId     String
+  chat       Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  memberId   String
+  member     Member   @relation(fields: [memberId], references: [id])
+  lastReadAt DateTime @default(now())
+
+  @@id([chatId, memberId])
+  @@index([memberId])
+}
+
+model Message {
+  id          String       @id @default(cuid())
+  chatId      String
+  chat        Chat         @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  senderId    String
+  sender      Member       @relation(fields: [senderId], references: [id])
+  text        String       @default("")
+  createdAt   DateTime     @default(now())
+  editedAt    DateTime?
+  // Deleted messages stay as a placeholder; their text and files are removed.
+  deletedAt   DateTime?
+  // Bumped on every change, so clients can fetch only what changed since they last looked.
+  updatedAt   DateTime     @updatedAt
+  attachments Attachment[]
+
+  @@index([chatId, createdAt])
+  @@index([chatId, updatedAt])
+}
+
+model Attachment {
+  id        String         @id @default(cuid())
+  messageId String
+  message   Message        @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  kind      AttachmentKind
+  name      String // original file name
+  mime      String
+  size      Int
+  // File name inside storage/chat.
+  file      String
+  // Voice messages: length in seconds.
+  duration  Int?
 }

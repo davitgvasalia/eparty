@@ -107,3 +107,15 @@ body {
 .pb-mobile-nav {
   padding-bottom: calc(7rem + env(safe-area-inset-bottom));
 }
+
+/* The chat fills the screen between the top bar and the bottom nav (mobile) or the
+   page's bottom padding (desktop), so only its message list scrolls. */
+.chat-height {
+  height: calc(100dvh - 12.5rem - env(safe-area-inset-bottom));
+  min-height: 22rem;
+}
+@media (min-width: 768px) {
+  .chat-height {
+    height: calc(100dvh - 8rem);
+  }
+}
