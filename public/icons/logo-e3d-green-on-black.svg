@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="13 10 285 285" width="512" height="512" role="img" aria-label="e-მმართველობა">
+  <defs>
+    <linearGradient id="face" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F2F7FF"/>
+      <stop offset="0.5" stop-color="#C4DAFF"/>
+      <stop offset="1" stop-color="#9DBFFF"/>
+    </linearGradient>
+    <linearGradient id="mint" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#B8F5DC"/>
+      <stop offset="1" stop-color="#4FE0A8"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/>
+      <stop offset="0.3" stop-color="#000" stop-opacity="0.16"/>
+      <stop offset="0.5" stop-color="#000" stop-opacity="0"/>
+      <stop offset="0.8" stop-color="#000" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.05"/>
+    </linearGradient>
+    <clipPath id="crossclip"><g><rect x="41.5" y="0.0" width="13" height="64"/><rect x="16.0" y="25.5" width="64" height="13"/><rect x="21.5" y="7.5" width="5" height="17"/><rect x="15.5" y="13.5" width="17" height="5"/><rect x="69.5" y="7.5" width="5" height="17"/><rect x="63.5" y="13.5" width="17" height="5"/><rect x="21.5" y="39.5" width="5" height="17"/><rect x="15.5" y="45.5" width="17" height="5"/><rect x="69.5" y="39.5" width="5" height="17"/><rect x="63.5" y="45.5" width="17" height="5"/></g></clipPath>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#8DB2FF" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- crosses behind the letter -->
+  <g transform="translate(158 76) scale(1.3) rotate(-3) translate(8 0) skewX(-7)">
+    <g fill="#7CEBBB"><rect x="41.5" y="0.0" width="13" height="64"/><rect x="16.0" y="25.5" width="64" height="13"/><rect x="21.5" y="7.5" width="5" height="17"/><rect x="15.5" y="13.5" width="17" height="5"/><rect x="69.5" y="7.5" width="5" height="17"/><rect x="63.5" y="13.5" width="17" height="5"/><rect x="21.5" y="39.5" width="5" height="17"/><rect x="15.5" y="45.5" width="17" height="5"/><rect x="69.5" y="39.5" width="5" height="17"/><rect x="63.5" y="45.5" width="17" height="5"/></g>
+    <rect x="-4" y="-16" width="104" height="100" fill="url(#shade)" clip-path="url(#crossclip)"/>
+  </g>
+
+  <!-- 3D letter e -->
+  <g transform="translate(112 150) skewY(-5) scale(0.92 1) translate(-112 -150)" filter="url(#glow)">
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(22.10 13.00)" fill="none" stroke="rgb(58, 91, 192)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(21.25 12.50)" fill="none" stroke="rgb(61, 94, 194)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(20.40 12.00)" fill="none" stroke="rgb(64, 98, 197)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(19.55 11.50)" fill="none" stroke="rgb(68, 101, 199)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(18.70 11.00)" fill="none" stroke="rgb(71, 104, 202)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(17.85 10.50)" fill="none" stroke="rgb(74, 108, 204)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(17.00 10.00)" fill="none" stroke="rgb(77, 111, 207)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(16.15 9.50)" fill="none" stroke="rgb(80, 114, 209)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(15.30 9.00)" fill="none" stroke="rgb(84, 118, 211)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(14.45 8.50)" fill="none" stroke="rgb(87, 121, 214)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(13.60 8.00)" fill="none" stroke="rgb(90, 124, 216)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(12.75 7.50)" fill="none" stroke="rgb(93, 128, 219)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(11.90 7.00)" fill="none" stroke="rgb(96, 131, 221)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(11.05 6.50)" fill="none" stroke="rgb(100, 134, 224)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(10.20 6.00)" fill="none" stroke="rgb(103, 138, 226)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(9.35 5.50)" fill="none" stroke="rgb(106, 141, 228)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(8.50 5.00)" fill="none" stroke="rgb(109, 145, 231)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(7.65 4.50)" fill="none" stroke="rgb(112, 148, 233)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(6.80 4.00)" fill="none" stroke="rgb(115, 151, 236)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(5.95 3.50)" fill="none" stroke="rgb(119, 155, 238)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(5.10 3.00)" fill="none" stroke="rgb(122, 158, 240)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(4.25 2.50)" fill="none" stroke="rgb(125, 161, 243)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(3.40 2.00)" fill="none" stroke="rgb(128, 165, 245)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(2.55 1.50)" fill="none" stroke="rgb(131, 168, 248)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(1.70 1.00)" fill="none" stroke="rgb(135, 171, 250)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" transform="translate(0.85 0.50)" fill="none" stroke="rgb(138, 175, 253)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 150 H174 A62 62 0 1 0 143 203.7" fill="none" stroke="url(#face)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M62 140 A52 52 0 0 1 150 112" fill="none" stroke="#FFFFFF" stroke-opacity="0.7" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- check mark -->
+  <g transform="translate(168 176) scale(1.9)">
+    <path d="M0 14 L12 27 L34 1" fill="none" stroke="#000000" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M0 14 L12 27 L34 1" fill="none" stroke="url(#mint)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

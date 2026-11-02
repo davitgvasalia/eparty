@@ -1,7 +1,7 @@
 // Service worker: makes the site installable and shows an offline page without a connection.
 // Data (/api) and pages always come from the network, so votes and results are never stale;
 // only build assets and icons are cached.
-const CACHE = "eparty-v1";
+const CACHE = "eparty-v2";
 const OFFLINE_URL = "/offline.html";
 
 self.addEventListener("install", (event) => {
