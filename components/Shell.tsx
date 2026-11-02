@@ -69,9 +69,7 @@ export default function Shell({
       {/* Sidebar (desktop) */}
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-slate-200 bg-surface md:flex">
         <div className="flex h-16 items-center gap-3 border-b border-slate-200 px-5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white">
-            <Vote size={18} />
-          </div>
+          <img src="/icons/icon.svg" alt="" className="h-9 w-9 shrink-0" />
           <div className="leading-tight">
             <div className="text-sm font-semibold">{dict.appName}</div>
             <div className="text-[11px] text-slate-500">Solana</div>
