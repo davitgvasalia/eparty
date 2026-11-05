@@ -233,3 +233,10 @@ model News {
   date      String // YYYY-MM-DD, shown on the timeline
   createdAt DateTime @default(now())
 }
+
+/** Small editable settings stored as JSON, such as the website's texts (key "site"). */
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}

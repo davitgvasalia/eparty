@@ -20,11 +20,10 @@ import {
   useSession,
   useStore,
 } from "./PollsStore";
-import AdminNews from "./AdminNews";
 import { Notice, StatusBadge } from "./ui";
 import WalletButton from "./WalletButton";
 
-type Tab = "applications" | "members" | "districts" | "polls" | "initiatives" | "news";
+type Tab = "applications" | "members" | "districts" | "polls" | "initiatives";
 
 export default function AdminPanel({
   locale,
@@ -211,7 +210,7 @@ export default function AdminPanel({
 
   const pickImage = async (file?: File) => setImage(file ? await shrinkImage(file) : "");
 
-  const tabs: Tab[] = ["applications", "members", "districts", "polls", "initiatives", "news"];
+  const tabs: Tab[] = ["applications", "members", "districts", "polls", "initiatives"];
 
   return (
     <div>
@@ -524,7 +523,6 @@ export default function AdminPanel({
         </div>
       )}
 
-      {tab === "news" && <AdminNews locale={locale} dict={dict} />}
 
       {tab === "initiatives" && (
         <div className="space-y-3">

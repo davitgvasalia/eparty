@@ -190,7 +190,7 @@ const en = {
     connectFirst: "Connect and sign in with the administrator wallet to continue.",
     demoMode:
       "Demo mode: no administrator wallet is configured, so this panel is open.",
-    tabs: { applications: "Applications", members: "Members", districts: "Districts", polls: "Polls", initiatives: "Initiatives", news: "News" },
+    tabs: { applications: "Applications", members: "Members", districts: "Districts", polls: "Polls", initiatives: "Initiatives" },
     addMember: "Add member",
     fullNameKa: "Full name (Georgian)",
     fullNameEn: "Full name (English)",
@@ -423,7 +423,7 @@ const ka: Dict = {
     connectFirst: "გასაგრძელებლად დააკავშირეთ ადმინისტრატორის ვოლეტი და შედით სისტემაში.",
     demoMode:
       "დემო რეჟიმი: ადმინისტრატორის ვოლეტი არ არის მითითებული, ამიტომ პანელი ღიაა (production-ში დაიხურება).",
-    tabs: { applications: "განაცხადები", members: "წევრები", districts: "რაიონები", polls: "გამოკითხვები", initiatives: "ინიციატივები", news: "სიახლეები" },
+    tabs: { applications: "განაცხადები", members: "წევრები", districts: "რაიონები", polls: "გამოკითხვები", initiatives: "ინიციატივები" },
     addMember: "წევრის დამატება",
     fullNameKa: "სახელი და გვარი (ქართულად)",
     fullNameEn: "სახელი და გვარი (ინგლისურად)",

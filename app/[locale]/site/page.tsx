@@ -19,7 +19,7 @@ import { getDict } from "@/lib/dictionaries";
 import { fmtDate, isLocale } from "@/lib/i18n";
 import { listNews, type NewsItem } from "@/lib/server/news";
 import { appRedirectScript } from "@/lib/appMode";
-import { contacts, getSiteContent } from "@/lib/siteContent";
+import { loadSite } from "@/lib/server/site";
 
 // News comes from the database on every visit.
 export const dynamic = "force-dynamic";
@@ -36,7 +36,9 @@ export default async function SitePage({ params }: { params: { locale: string } 
   if (!isLocale(params.locale)) notFound();
   const locale = params.locale;
   const dict = getDict(locale);
-  const c = getSiteContent(locale);
+  const site = await loadSite();
+  const c = site[locale];
+  const contacts = site.contacts;
   const appHref = `/${locale}`;
   const other = locale === "ka" ? "en" : "ka";
 

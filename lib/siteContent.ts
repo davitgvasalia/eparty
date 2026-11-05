@@ -1,16 +1,17 @@
-import type { Locale } from "./i18n";
-
-// Texts of the public website (/site). Edit them here; the news timeline is managed
-// in the app's admin panel instead.
+// Default texts of the public website (/site). The administrator edits them in the
+// website's management panel (/<locale>/site/admin); what is saved there is stored in the
+// database and replaces these defaults (lib/server/site.ts).
 
 /** Contact details. Empty values are not shown on the site. */
-export const contacts = {
+const contacts = {
   email: "",
   phone: "",
   address: { ka: "", en: "" },
   facebook: "", // full URL
   website: "https://e-p.hrgeo.ge",
 };
+
+export type Contacts = typeof contacts;
 
 const en = {
   nav: { about: "About", statute: "Statute", membership: "Membership", news: "News", contacts: "Contacts" },
@@ -208,6 +209,45 @@ const ka: SiteContent = {
   footer: "ელექტრონული პარტია",
 };
 
-export function getSiteContent(locale: Locale): SiteContent {
-  return locale === "ka" ? ka : en;
+/** Everything the website shows apart from the news: texts in both languages and contacts. */
+export interface SiteData {
+  ka: SiteContent;
+  en: SiteContent;
+  contacts: Contacts;
+}
+
+export const defaultSite: SiteData = { ka, en, contacts };
+
+const MAX_TEXT = 10_000;
+const MAX_ITEMS = 50;
+
+/** The same shape with every text emptied; used for list items that are added or missing. */
+export function blank<T>(template: T): T {
+  if (typeof template === "string") return "" as T;
+  if (Array.isArray(template)) return [] as T;
+  if (template && typeof template === "object")
+    return Object.fromEntries(Object.entries(template).map(([k, v]) => [k, blank(v)])) as T;
+  return template;
+}
+
+/**
+ * Fits stored (or submitted) data to the shape of the defaults: unknown keys are dropped,
+ * missing texts fall back to the defaults, and texts and lists are capped in size.
+ */
+function conform<T>(value: unknown, template: T): T {
+  if (typeof template === "string") return (typeof value === "string" ? value.slice(0, MAX_TEXT) : template) as T;
+  if (Array.isArray(template)) {
+    if (!Array.isArray(value)) return template;
+    const item = template[0] ?? "";
+    return value.slice(0, MAX_ITEMS).map((v) => conform(v, blank(item))) as T;
+  }
+  if (template && typeof template === "object") {
+    const v = value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
+    return Object.fromEntries(Object.entries(template).map(([k, t]) => [k, conform(v[k], t)])) as T;
+  }
+  return template;
+}
+
+export function normalizeSite(value: unknown): SiteData {
+  return conform(value, defaultSite);
 }
