@@ -15,6 +15,7 @@ import {
   MessageCircle,
   Globe,
 } from "lucide-react";
+import { rememberSiteVisit } from "@/lib/appMode";
 import type { Dict } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
 import { useChat } from "./ChatStore";
@@ -128,6 +129,7 @@ export default function Shell({
             )}
             <Link
               href={`/${locale}/site`}
+              onClick={rememberSiteVisit}
               aria-label={dict.common.website}
               title={dict.common.website}
               className="flex items-center gap-2 rounded-xl border border-slate-200 p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 lg:px-3"

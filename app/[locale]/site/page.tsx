@@ -18,6 +18,7 @@ import SiteSlider from "@/components/SiteSlider";
 import { getDict } from "@/lib/dictionaries";
 import { fmtDate, isLocale } from "@/lib/i18n";
 import { listNews, type NewsItem } from "@/lib/server/news";
+import { appRedirectScript } from "@/lib/appMode";
 import { contacts, getSiteContent } from "@/lib/siteContent";
 
 // News comes from the database on every visit.
@@ -58,6 +59,7 @@ export default async function SitePage({ params }: { params: { locale: string } 
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
+      <script dangerouslySetInnerHTML={{ __html: appRedirectScript(appHref) }} />
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[#0b1a33]/90 pt-safe backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 md:px-8">
