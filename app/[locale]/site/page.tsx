@@ -26,7 +26,7 @@ export const dynamic = "force-dynamic";
 export function generateMetadata({ params }: { params: { locale: string } }): Metadata {
   if (!isLocale(params.locale)) return {};
   const dict = getDict(params.locale);
-  return { title: `${dict.appName} · ${getSiteContent(params.locale).footer}`, description: dict.tagline };
+  return { title: `${dict.appName} · ${dict.tagline}`, description: dict.tagline };
 }
 
 const POINT_ICONS = [Eye, Users, ShieldCheck];
