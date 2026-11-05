@@ -221,3 +221,15 @@ model Attachment {
   // Voice messages: length in seconds.
   duration  Int?
 }
+
+/** A post on the public website's news timeline, written by the administrator. */
+model News {
+  id        String   @id @default(cuid())
+  titleKa   String
+  titleEn   String
+  bodyKa    String
+  bodyEn    String
+  image     String? // small JPEG data URL
+  date      String // YYYY-MM-DD, shown on the timeline
+  createdAt DateTime @default(now())
+}

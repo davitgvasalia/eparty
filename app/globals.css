@@ -119,3 +119,7 @@ body {
     height: calc(100dvh - 8rem);
   }
 }
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}

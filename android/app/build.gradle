@@ -23,7 +23,7 @@ plugins {
 def twaManifest = [
     applicationId: 'ge.hrgeo.ep',
     hostName: 'e-p.hrgeo.ge', // The domain being opened in the TWA.
-    launchUrl: '/', // The start path for the TWA. Must be relative to the domain.
+    launchUrl: '/?source=app', // The start path for the TWA. Must be relative to the domain. "source=app" skips the public website.
     name: 'E-Party / ელექტრონული პარტია', // The application name.
     launcherName: 'E-Party', // The name shown on the Android Launcher.
     themeColor: '#4F46E5', // The color used for the status bar.

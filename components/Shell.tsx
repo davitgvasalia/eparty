@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   UserPlus,
   MessageCircle,
+  Globe,
 } from "lucide-react";
 import type { Dict } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
@@ -125,6 +126,15 @@ export default function Shell({
                 )}
               </Link>
             )}
+            <Link
+              href={`/${locale}/site`}
+              aria-label={dict.common.website}
+              title={dict.common.website}
+              className="flex items-center gap-2 rounded-xl border border-slate-200 p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 lg:px-3"
+            >
+              <Globe size={20} className="lg:h-[18px] lg:w-[18px]" />
+              <span className="hidden lg:inline">{dict.common.website}</span>
+            </Link>
             <Link
               href={switchHref}
               className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"

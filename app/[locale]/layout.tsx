@@ -2,9 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import "../globals.css";
-import { ChatProvider } from "@/components/ChatStore";
-import Providers from "@/components/Providers";
-import Shell from "@/components/Shell";
 import { themeInitScript } from "@/components/ThemeToggle";
 import { getDict } from "@/lib/dictionaries";
 import { isLocale, locales } from "@/lib/i18n";
@@ -49,22 +46,14 @@ export default function LocaleLayout({
 }) {
   if (!isLocale(params.locale)) notFound();
   const locale = params.locale;
-  const dict = getDict(locale);
 
+  // The app's providers and menu live in (app)/layout.tsx; the public website (/site) has none.
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body>
-        <Providers>
-          <ChatProvider>
-            <Shell locale={locale} dict={dict}>
-              {children}
-            </Shell>
-          </ChatProvider>
-        </Providers>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

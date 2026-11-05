@@ -9,7 +9,8 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "E-Party",
     description: "ელექტრონული პარტია: ხმის მიცემა Solana ვოლეტით",
     lang: "ka",
-    start_url: "/",
+    // "source=app" makes the middleware open the app instead of the public website.
+    start_url: "/?source=app",
     scope: "/",
     display: "standalone",
     orientation: "portrait",

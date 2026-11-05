@@ -30,6 +30,7 @@ const en = {
     empty: "Nothing here yet.",
     toggleTheme: "Switch between day and night mode",
     signIn: "Sign the message in your wallet to continue",
+    website: "Website",
   },
   login: {
     title: "Sign in with your wallet",
@@ -189,7 +190,7 @@ const en = {
     connectFirst: "Connect and sign in with the administrator wallet to continue.",
     demoMode:
       "Demo mode: no administrator wallet is configured, so this panel is open.",
-    tabs: { applications: "Applications", members: "Members", districts: "Districts", polls: "Polls", initiatives: "Initiatives" },
+    tabs: { applications: "Applications", members: "Members", districts: "Districts", polls: "Polls", initiatives: "Initiatives", news: "News" },
     addMember: "Add member",
     fullNameKa: "Full name (Georgian)",
     fullNameEn: "Full name (English)",
@@ -220,6 +221,13 @@ const en = {
     edit: "Edit",
     save: "Save",
     districtInUse: "Members belong to this district, so it can't be removed.",
+    addNews: "Add news",
+    newsTitleKa: "Title (Georgian)",
+    newsTitleEn: "Title (English)",
+    newsBodyKa: "Text (Georgian)",
+    newsBodyEn: "Text (English)",
+    newsDate: "Date",
+    newsRequired: "Fill in the title, text and date in both languages.",
   },
 };
 
@@ -255,6 +263,7 @@ const ka: Dict = {
     empty: "ჯერ არაფერია.",
     toggleTheme: "დღის და ღამის რეჟიმის გადართვა",
     signIn: "გასაგრძელებლად მოაწერეთ ხელი შეტყობინებას ვოლეტში",
+    website: "ვებგვერდი",
   },
   login: {
     title: "შესვლა ვოლეტით",
@@ -414,7 +423,7 @@ const ka: Dict = {
     connectFirst: "გასაგრძელებლად დააკავშირეთ ადმინისტრატორის ვოლეტი და შედით სისტემაში.",
     demoMode:
       "დემო რეჟიმი: ადმინისტრატორის ვოლეტი არ არის მითითებული, ამიტომ პანელი ღიაა (production-ში დაიხურება).",
-    tabs: { applications: "განაცხადები", members: "წევრები", districts: "რაიონები", polls: "გამოკითხვები", initiatives: "ინიციატივები" },
+    tabs: { applications: "განაცხადები", members: "წევრები", districts: "რაიონები", polls: "გამოკითხვები", initiatives: "ინიციატივები", news: "სიახლეები" },
     addMember: "წევრის დამატება",
     fullNameKa: "სახელი და გვარი (ქართულად)",
     fullNameEn: "სახელი და გვარი (ინგლისურად)",
@@ -445,6 +454,13 @@ const ka: Dict = {
     edit: "რედაქტირება",
     save: "შენახვა",
     districtInUse: "ამ რაიონში წევრები არიან, ამიტომ წაშლა შეუძლებელია.",
+    addNews: "სიახლის დამატება",
+    newsTitleKa: "სათაური (ქართულად)",
+    newsTitleEn: "სათაური (ინგლისურად)",
+    newsBodyKa: "ტექსტი (ქართულად)",
+    newsBodyEn: "ტექსტი (ინგლისურად)",
+    newsDate: "თარიღი",
+    newsRequired: "შეავსეთ სათაური, ტექსტი და თარიღი ორივე ენაზე.",
   },
 };
 
